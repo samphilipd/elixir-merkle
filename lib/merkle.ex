@@ -1,6 +1,6 @@
 defmodule Merkle do
   @doc """
-  Return value of a merkle tree node following route.
+  Return merkle tree node following route.
 
   e.g. 00000101 (0 being left, 1 being right)
   """
@@ -11,9 +11,14 @@ defmodule Merkle do
     |> String.graphemes()
     |> Enum.map(&String.to_integer/1)
     |> Enum.reduce(root, fn idx, node ->
-      Enum.at(node.children, idx)
+      child = Enum.at(node.children, idx)
+
+      if is_nil(child) do
+        raise "Route too deep, max depth is #{depth(root) - 1}"
+      else
+        child
+      end
     end)
-    |> Map.fetch!(:value)
   end
 
   @doc """
@@ -63,5 +68,17 @@ defmodule Merkle do
 
   defp hash(binary) do
     :crypto.hash(:sha256, binary)
+  end
+
+  defp depth(node) do
+    depth(node, 1)
+  end
+
+  defp depth(%{children: []}, depth) do
+    depth
+  end
+
+  defp depth(%{children: [l, _]}, depth) do
+    depth(l, depth + 1)
   end
 end

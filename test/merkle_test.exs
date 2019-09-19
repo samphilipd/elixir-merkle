@@ -12,7 +12,15 @@ defmodule MerkleTest do
   test "retrieves children using binary path" do
     route = "00000101"
 
-    assert Merkle.lookup(@path, route) |> Base.encode16(case: :lower) ==
+    assert Merkle.lookup(@path, route).value |> Base.encode16(case: :lower) ==
              "a144cb1e6029f92b0403071a07b69dd9d3aff267c8ff5f2e6e950721562bf84b"
+  end
+
+  test "raises error if attempting to use route too deep" do
+    route = "000001011"
+
+    assert_raise RuntimeError, "Route too deep, max depth is 8", fn ->
+      Merkle.lookup(@path, route)
+    end
   end
 end

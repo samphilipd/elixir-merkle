@@ -1,21 +1,26 @@
 # Merkle
 
-**TODO: Add description**
+Get the Merkle root of the file at priv/alice.txt.
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `merkle` to your list of dependencies in `mix.exs`:
+# Run the tests
 
 ```elixir
-def deps do
-  [
-    {:merkle, "~> 0.1.0"}
-  ]
-end
+mix deps.get
+mix test
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/merkle](https://hexdocs.pm/merkle).
+# Run the CLI
 
+Get merkle root of the file:
+
+```
+./merkle
+```
+
+Print the hash of a node found at a particular route (0 means left, 1 means right):
+
+```
+./merkle 00000101
+```
+
+NOTE: If, when forming a row in the tree (other than the root of the tree), it would have an odd number of elements, the final double-hash is duplicated to ensure that the row has an even number of hashes. So every node always has a left and right child unless it is a leaf in which case it has no children.
