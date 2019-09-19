@@ -1,9 +1,25 @@
 defmodule Merkle do
   @doc """
-  Read a file, build a merkle tree and return its root hash.
+  Return value of a merkle tree node following route.
 
+  e.g. 00000101 (0 being left, 1 being right)
   """
-  def root(path) do
+  def lookup(path, route) when is_binary(path) and is_binary(route) do
+    root = root(path)
+
+    route
+    |> String.graphemes()
+    |> Enum.map(&String.to_integer/1)
+    |> Enum.reduce(root, fn idx, node ->
+      Enum.at(node.children, idx)
+    end)
+    |> Map.fetch!(:value)
+  end
+
+  @doc """
+  Read a file, build a merkle tree and return the root.
+  """
+  def root(path) when is_binary(path) do
     path
     |> bottom_leaf_nodes
     |> build_tree
@@ -36,7 +52,7 @@ defmodule Merkle do
 
   defp bottom_leaf_nodes(path) do
     path
-    |> File.stream!([], 1000)
+    |> File.stream!([], 1024)
     |> Enum.map(fn block ->
       %Merkle.Node{
         value: hash(block),
