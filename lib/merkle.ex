@@ -14,7 +14,7 @@ defmodule Merkle do
       child = Enum.at(node.children, idx)
 
       if is_nil(child) do
-        raise "Route too deep, max depth is #{depth(root) - 1}"
+        raise "Route too deep, max depth is #{depth(root)}"
       else
         child
       end
@@ -71,7 +71,7 @@ defmodule Merkle do
   end
 
   defp depth(node) do
-    depth(node, 1)
+    depth(node, 0)
   end
 
   defp depth(%{children: []}, depth) do
