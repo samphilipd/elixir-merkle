@@ -16,19 +16,19 @@ defmodule Merkle do
 
     parents =
       Enum.map(child_pairs, fn child_pair ->
-        concatenated =
-          case child_pair do
-            [left, right] ->
-              left.value <> right.value
+        case child_pair do
+          [left, right] ->
+            %Merkle.Node{
+              value: hash(left.value <> right.value),
+              children: [left, right]
+            }
 
-            [left] ->
-              left.value <> left.value
-          end
-
-        %Merkle.Node{
-          value: hash(concatenated),
-          children: child_pair
-        }
+          [left] ->
+            %Merkle.Node{
+              value: hash(left.value <> left.value),
+              children: [left, left]
+            }
+        end
       end)
 
     build_tree(parents)
